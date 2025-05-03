@@ -160,11 +160,10 @@
 
     @media (max-width: 768px) {
     .KachanButton {
-        width: 150px;
-        height: 150px;
-        bottom: 150px;
-        left: 50%;
-        transform: translateX(-50%);
+        width: 180px;
+        height: 180px;
+        bottom: 180px;
+        left: calc(50% - 90px); /* центрируем без transform */
     }
 
     .EnergySection {
@@ -174,22 +173,22 @@
     }
 
     .energy {
-        font-size: 16px;
+        font-size: 18px;
+        bottom: 105px;
         left: 50%;
         transform: translateX(-50%);
-        bottom: 105px;
     }
 
     #Upgrade1, #Upgrade2, #Upgrade3 {
-        width: 90px;
-        height: 90px;
-        font-size: 14px;
-        bottom: 10px;
+        width: 80px;
+        height: 80px;
+        font-size: 12px;
+        bottom: 15px;
     }
 
-    #Upgrade1 { right: 20px; }
-    #Upgrade2 { right: 120px; }
-    #Upgrade3 { right: 220px; }
+    #Upgrade1 { right: 10px; }
+    #Upgrade2 { right: 100px; }
+    #Upgrade3 { right: 190px; }
 
     #coins {
         font-size: 32px;
@@ -206,6 +205,12 @@
 
     .modal-content {
         width: 90%;
+    }
+
+    #openPromoModal {
+        bottom: 80px;
+        font-size: 14px;
+        padding: 8px 16px;
     }
 }
 
