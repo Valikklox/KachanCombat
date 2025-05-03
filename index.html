@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KachanCombat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .Main {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #9F9C80 48.08%, #656456 80.1%, #2B2B2B 100%);
+    }
+
+    .energy {
+        position: absolute;
+        width: 40.67px;
+        height: 25.07px;
+        font-size: 20px;
+        color: #1E1E1E;
+        bottom: 125px;
+        left: 425px;
+        z-index: 10000000;
+    }
+
+    .EnergySection {
+        position: absolute;
+        width: 483px;
+        height: 39px;
+        background: #A8A377;
+        border-radius: 30px;
+        bottom: 120px;
+        left: 190px;
+    }
+
+    .down {
+        position: absolute;
+        width: 100%;
+        height: 62px;
+        background: #2B2B2B;
+        bottom: 0px;
+    }
+
+    .Nickname {
+        position: absolute;
+        font-size: 24px;
+        color: #444444;
+        left: 40px;
+        top: -20px;
+    }
+
+    .KachanButton {
+        position: absolute;
+        width: 275px;
+        height: 275px;
+        background: url(https://i.imgur.com/ooaERwO.jpeg) no-repeat center center;
+        background-size: cover;
+        box-shadow: 4.8px 9.7px 3.9px rgba(0, 0, 0, 0.25);
+        filter: blur(0.48px);
+        border-radius: 137.5px;
+        bottom: 250px;
+        left: 300px;
+        z-index: 10;
+    }
+
+    .KachanButton button {
+        width: 100%;
+        height: 100%;
+        background: none;
+        border: none;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    #Upgrade1, #Upgrade2, #Upgrade3 {
+        box-sizing: border-box;
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        background: rgba(178, 173, 131, 0.82);
+        border: 5px solid rgba(111, 104, 72, 0.61);
+        border-radius: 13px;
+        font-family: 'Inter', sans-serif;
+        color: #444444;
+    }
+
+    #Upgrade1 { right: 50px; }
+    #Upgrade2 { right: 200px; }
+    #Upgrade3 { right: 350px; }
+
+    #coins {
+        position: absolute;
+        font-size: 48px;
+        color: #2F2F2F;
+        left: 410px;
+        height: 55px;
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #A8A377;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+        text-align: center;
+    }
+
+    .modal-content input {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    .modal-content button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #888555;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #openPromoModal {
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #6e6a50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 9999;
+    }
+</style>
+<body>
+    <div class="Main">
+        <div class="Nickname">
+            <h1 id="nickname">Kachan</h1>
+        </div>
+
+        <div class="down"></div>
+        <div class="EnergySection"></div>
+        <div class="energy" id="energy">100</div>
+        <div class="KachanCoins">
+            <p id="coins">0</p>
+        </div>
+
+        <div class="KachanButton">
+            <button id="KachanButton"></button>
+        </div>
+
+        <div class="Upgrades">
+            <button id="Upgrade1"></button>
+            <button id="Upgrade2"></button>
+            <button id="Upgrade3"></button>
+        </div>
+
+        <!-- Promo Button -->
+        <button id="openPromoModal">Ввести промокод</button>
+
+        <!-- Modal -->
+        <div id="promoModal" class="modal">
+            <div class="modal-content">
+                <input type="text" id="promoCodeInput" placeholder="Введите промокод">
+                <button id="promoCodeButton">Применить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const energyDisplay = document.getElementById("energy");
+        const coinsDisplay = document.getElementById("coins");
+        const kachanButton = document.getElementById("KachanButton");
+        const upgrade1 = document.getElementById("Upgrade1");
+        const upgrade2 = document.getElementById("Upgrade2");
+        const upgrade3 = document.getElementById("Upgrade3");
+        const promoCodeInput = document.getElementById("promoCodeInput");
+        const promoCodeButton = document.getElementById("promoCodeButton");
+        const openPromoModal = document.getElementById("openPromoModal");
+        const promoModal = document.getElementById("promoModal");
+
+        const UPGRADE_COSTS = [50, 100, 200];
+
+        let energy = 100;
+        let maxEnergy = 100;
+        let coins = 0;
+        let miningMultiplier = 1;
+        let miningBoostActive = false;
+
+        function saveProgress() {
+            localStorage.setItem("energy", energy);
+            localStorage.setItem("maxEnergy", maxEnergy);
+            localStorage.setItem("coins", coins);
+            localStorage.setItem("lastTime", Date.now());
+        }
+
+        function loadProgress() {
+            const savedEnergy = parseInt(localStorage.getItem("energy"));
+            const savedMax = parseInt(localStorage.getItem("maxEnergy"));
+            const savedCoins = parseInt(localStorage.getItem("coins"));
+            const lastTime = parseInt(localStorage.getItem("lastTime"));
+
+            if (!isNaN(savedEnergy)) energy = savedEnergy;
+            if (!isNaN(savedMax)) maxEnergy = savedMax;
+            if (!isNaN(savedCoins)) coins = savedCoins;
+
+            if (!isNaN(lastTime)) {
+                const diff = Math.floor((Date.now() - lastTime) / 1500); // 1 ед. энергии = 1.5 сек
+                energy += diff;
+                if (energy > maxEnergy) energy = maxEnergy;
+            }
+        }
+
+        function updateUI() {
+            energyDisplay.textContent = energy;
+            coinsDisplay.textContent = coins;
+            kachanButton.disabled = energy < 2;
+            saveProgress();
+        }
+
+        function mineCoin() {
+            if (energy >= 2) {
+                energy -= 2;
+                coins += 1 * miningMultiplier;
+                updateUI();
+            }
+        }
+
+        upgrade1.textContent = `+50 Energy - ${UPGRADE_COSTS[0]} coins`;
+        upgrade2.textContent = `x2 tap - ${UPGRADE_COSTS[1]} coins`;
+        upgrade3.textContent = `Full Energy Restore - ${UPGRADE_COSTS[2]} coins`;
+
+        upgrade1.addEventListener("click", () => {
+            if (coins >= UPGRADE_COSTS[0]) {
+                coins -= UPGRADE_COSTS[0];
+                maxEnergy += 50;
+                energy += 50;
+                if (energy > maxEnergy) energy = maxEnergy;
+                updateUI();
+            }
+        });
+
+        upgrade2.addEventListener("click", () => {
+            if (coins >= UPGRADE_COSTS[1] && !miningBoostActive) {
+                coins -= UPGRADE_COSTS[1];
+                miningBoostActive = true;
+                miningMultiplier = 2;
+                updateUI();
+                setTimeout(() => {
+                    miningMultiplier = 1;
+                    miningBoostActive = false;
+                }, 10000);
+            }
+        });
+
+        upgrade3.addEventListener("click", () => {
+            if (coins >= UPGRADE_COSTS[2]) {
+                coins -= UPGRADE_COSTS[2];
+                energy = maxEnergy;
+                updateUI();
+            }
+        });
+
+        promoCodeButton.addEventListener("click", () => {
+            const code = promoCodeInput.value.trim().toUpperCase();
+            if (code === "KCUA8M") {
+                coins += 1500;
+                updateUI();
+            }
+            promoModal.style.display = "none";
+            promoCodeInput.value = "";
+        });
+
+        openPromoModal.addEventListener("click", () => {
+            promoModal.style.display = "block";
+        });
+
+        window.addEventListener("click", (e) => {
+            if (e.target === promoModal) {
+                promoModal.style.display = "none";
+            }
+        });
+
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                if (energy > maxEnergy) energy = maxEnergy;
+                updateUI();
+            }
+        }, 1500);
+
+        setInterval(saveProgress, 5000);
+
+        const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        if (telegramUser?.username) {
+            document.getElementById("nickname").textContent = telegramUser.username;
+        }
+
+        loadProgress();
+        updateUI();
+
+        kachanButton.addEventListener("click", mineCoin);
+    });
+
+
+    promoCodeButton.addEventListener("click", () => {
+    const code = promoCodeInput.value.trim().toUpperCase();
+
+    // Получаем использованные коды из localStorage
+    let usedCodes = JSON.parse(localStorage.getItem("usedPromoCodes")) || [];
+
+    // Проверка на уже использованный код
+    if (usedCodes.includes(code)) {
+        alert("Этот промокод уже был использован.");
+    } else {
+        // Промокод верный
+        if (code === "KCUA8M") {
+            coins += 1500;
+            updateUI();
+
+            usedCodes.push(code); // Добавляем код в использованные
+            localStorage.setItem("usedPromoCodes", JSON.stringify(usedCodes));
+        } else {
+            alert("Неверный промокод.");
+        }
+    }
+
+    promoModal.style.display = "none";
+    promoCodeInput.value = "";
+});
+
+</script>
+
+</body>
+</html>
